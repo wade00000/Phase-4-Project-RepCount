@@ -7,6 +7,8 @@ name = "pypi"
 
 [dev-packages]
 alembic = "*"
+flask = "*"
+flask-sqlalchemy = "*"
 
 [requires]
 python_version = "3.12"
