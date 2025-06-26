@@ -2,8 +2,11 @@ import os
 from flask import Flask,make_response,request,jsonify
 from app.models import db,User,Exercise,Workout,WorkoutExercise,Set
 from datetime import datetime
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app, origins=["http://127.0.0.1:5173"])
+
 basedir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 db_path = os.path.join(basedir, 'data', 'repcount.db')
 
