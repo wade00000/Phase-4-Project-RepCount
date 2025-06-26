@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from '../api/axios'; // Assuming this is your axios instance
 import { Link } from "react-router-dom";
-
+import WorkoutVolumeChart from "../components/WorkoutVolumeChart"
 
 function WorkoutHistory() {
   const [workouts, setWorkouts] = useState([]);
@@ -45,7 +45,9 @@ function WorkoutHistory() {
             </li>
           ))}
         </ul>
+        
       </div>
+      
     ))}
   </div>
 ))}

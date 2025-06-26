@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "../api/axios";
+import { getWorkouts } from '../api/workouts';
+import WorkoutVolumeChart from "../components/WorkoutVolumeChart";
 
 function LoggedWorkouts() {
   const [workouts, setWorkouts] = useState([]);
@@ -7,6 +9,37 @@ function LoggedWorkouts() {
   const [error, setError] = useState(null);
   const [sortAsc, setSortAsc] = useState(false);
   const [filterDate, setFilterDate] = useState("");
+  const [volumeData, setVolumeData] = useState([]);
+
+useEffect(() => {
+  const fetchWorkouts = async () => {
+    try {
+      const res = await getWorkouts(); // your GET /workouts API
+      const workouts = res.data;
+
+      const volumes = workouts.map(workout => {
+        let totalVolume = 0;
+
+        workout.workout_exercises.forEach(we => {
+          we.sets.forEach(set => {
+            totalVolume += set.reps * set.weight;
+          });
+        });
+
+        return {
+          date: new Date(workout.date).toLocaleDateString(), // keep consistent format
+          totalVolume
+        };
+      });
+
+      setVolumeData(volumes);
+    } catch (err) {
+      console.error("Error fetching workouts", err);
+    }
+  };
+
+  fetchWorkouts();
+}, []);
 
   useEffect(() => {
     fetchWorkouts();
@@ -51,7 +84,7 @@ function LoggedWorkouts() {
   return (
     <div>
       <h2>Logged Workouts</h2>
-
+    {volumeData.length > 0 && <WorkoutVolumeChart data={volumeData} />}
       <div style={{ marginBottom: "1rem" }}>
         <label>
           Filter by Date:{" "}
