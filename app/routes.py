@@ -64,7 +64,7 @@ def update_exercise(id):
 
 @app.route('/exercises/<int:id>',methods = ['DELETE'])
 def delete_exercise(id):
-    exercise = Exercise.query.get(id).first()
+    exercise = Exercise.query.get(id)
 
     if exercise is None:
         return jsonify({"error": "Exercise not found"}), 404

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react' 
 import { getExercises } from '../api/exercises' 
 
-function ExerciseList({exercises,loading,error}) {
+function ExerciseList({exercises,loading,error,onDelete}) {
   
 
   if (loading) return <p>Loading...</p> 
@@ -15,10 +15,14 @@ function ExerciseList({exercises,loading,error}) {
       ):(
       <ul>
         {exercises.map((exe) => (
-          <li key={exe.id}>{exe.name}</li>
+          <li key={exe.id}>
+            {exe.name}
+            <button onClick={() => onDelete(exe.id)}>❌</button>
+            </li>
         ))}
       </ul>
-        )}
+        )
+      }
     </div>
   ) 
 }

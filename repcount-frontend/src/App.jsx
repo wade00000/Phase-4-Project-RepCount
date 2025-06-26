@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {getExercises} from './api/exercises'
+import {getExercises,deleteExercise} from './api/exercises'
 import AddExerciseForm from './components/AddExerciseForm';
 import ExerciseList from './components/ExerciseList';
 
@@ -20,6 +20,16 @@ function Home() {
     }
   };
 
+  const handleDelete = async (id) => {
+  try {
+    await deleteExercise(id);
+    fetchExercises(); // refresh the list
+  } catch (err) {
+    console.error("Error deleting exercise", err);
+  }
+};
+
+
   useEffect(() => {
     fetchExercises();
   }, []);
@@ -27,7 +37,12 @@ function Home() {
   return (
     <div>
       <AddExerciseForm onAdd={fetchExercises} />
-      <ExerciseList exercises={exercises} loading={loading} error={error} />
+      <ExerciseList 
+      exercises={exercises} 
+      loading={loading} 
+      error={error}
+      onDelete={handleDelete}
+      />
     </div>
   );
 }
