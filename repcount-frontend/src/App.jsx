@@ -1,50 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import {getExercises,deleteExercise} from './api/exercises'
-import AddExerciseForm from './components/AddExerciseForm';
-import ExerciseList from './components/ExerciseList';
-
-function Home() {
-  const [exercises, setExercises] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error,setError] = useState(null)
-
-  const fetchExercises = async () => {
-    try {
-      const res = await getExercises();
-      setExercises(res.data);
-    } catch (err) {
-      console.error("Error fetching exercises:", err);
-      setError(err)
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDelete = async (id) => {
-  try {
-    await deleteExercise(id);
-    fetchExercises(); // refresh the list
-  } catch (err) {
-    console.error("Error deleting exercise", err);
-  }
-};
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import WorkoutLogger from './pages/WorkoutLogger';
 
 
-  useEffect(() => {
-    fetchExercises();
-  }, []);
-
+function App() {
   return (
-    <div>
-      <AddExerciseForm onAdd={fetchExercises} />
-      <ExerciseList 
-      exercises={exercises} 
-      loading={loading} 
-      error={error}
-      onDelete={handleDelete}
-      />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/log-workout" element={<WorkoutLogger />} />
+        {/* Add more routes as you build more pages */}
+      </Routes>
+    </Router>
   );
 }
 
-export default Home;
+export default App;
