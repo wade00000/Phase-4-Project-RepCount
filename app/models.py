@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-from serializer import SerializerMixin
+from sqlalchemy_serializer import SerializerMixin
+
 
 db = SQLAlchemy()
 

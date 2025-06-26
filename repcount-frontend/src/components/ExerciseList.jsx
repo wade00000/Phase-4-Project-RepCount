@@ -1,25 +1,8 @@
 import React, { useState, useEffect } from 'react' 
 import { getExercises } from '../api/exercises' 
 
-function ExerciseList({exercises,loading}) {
+function ExerciseList({exercises,loading,error}) {
   
-  const [exercises, setExercises] = useState([]) 
-  const [error, setError] = useState(null) 
-
-  useEffect(() => {
-    const fetchExercises = async () => {
-      try {
-        const response = await getExercises() 
-        setExercises(response.data) 
-      } catch (err) {
-        setError("Something went wrong.") 
-      } finally {
-        setLoading(false) 
-      }
-    } 
-
-    fetchExercises() 
-  }, []) 
 
   if (loading) return <p>Loading...</p> 
   if (error) return <p>{error}</p> 
@@ -31,8 +14,8 @@ function ExerciseList({exercises,loading}) {
         <p>No exercises found.</p>
       ):(
       <ul>
-        {exercises.map((exercise) => (
-          <li key={exercise.id}>{exercise.name}</li>
+        {exercises.map((exe) => (
+          <li key={exe.id}>{exe.name}</li>
         ))}
       </ul>
         )}

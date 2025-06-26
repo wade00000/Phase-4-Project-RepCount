@@ -6,6 +6,7 @@ import ExerciseList from './components/ExerciseList';
 function Home() {
   const [exercises, setExercises] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error,setError] = useState(null)
 
   const fetchExercises = async () => {
     try {
@@ -13,6 +14,7 @@ function Home() {
       setExercises(res.data);
     } catch (err) {
       console.error("Error fetching exercises:", err);
+      setError(err)
     } finally {
       setLoading(false);
     }
@@ -25,7 +27,7 @@ function Home() {
   return (
     <div>
       <AddExerciseForm onAdd={fetchExercises} />
-      <ExerciseList exercises={exercises} loading={loading} />
+      <ExerciseList exercises={exercises} loading={loading} error={error} />
     </div>
   );
 }

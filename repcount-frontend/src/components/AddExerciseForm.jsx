@@ -26,7 +26,7 @@ function AddExerciseForm({onAdd}){
       await createExercise({ name })
       setMessage("Exercise added!")
       setName("") // Clears the input
-      onAdd?.() // Triggers a refresh on adding an exercise
+      onAdd?.() // Triggers a refetch in Home
     } catch (err) {
       setMessage("Error adding exercise.");
       console.error(err)

@@ -1,8 +1,13 @@
+import os
 from flask import Flask,make_response,request,jsonify
-from models import db,User,Exercise,Workout,WorkoutExercise,Set
+from app.models import db,User,Exercise,Workout,WorkoutExercise,Set
 from datetime import datetime
+
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data/repcount.db'
+basedir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+db_path = os.path.join(basedir, 'data', 'repcount.db')
+
+app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{db_path}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
