@@ -112,6 +112,25 @@ def update_workout(id):
     db.session.commit()
     return jsonify(workout.to_dict()), 200
 
+@app.route('/workouts', methods=['GET'])
+def get_all_workouts():
+    all_data = []
+
+    for workout in Workout.query.all():
+        workout_data = workout.to_dict()
+        workout_data["workout_exercises"] = []
+
+        for we in workout.workout_exercises:
+            we_data = we.to_dict()
+            we_data["exercise"] = we.exercise.to_dict() if we.exercise else None
+            we_data["sets"] = [s.to_dict() for s in we.sets]
+            workout_data["workout_exercises"].append(we_data)
+
+        all_data.append(workout_data)
+
+    return jsonify(all_data), 200
+
+
 
 @app.route('/workouts/<int:id>', methods=['GET'])
 def get_workout(id):
