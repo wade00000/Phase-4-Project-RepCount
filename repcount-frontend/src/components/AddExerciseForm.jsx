@@ -1,7 +1,7 @@
 import React, { useState,useEffect } from 'react'
 import { createExercise } from '../api/exercises'
 
-function AddExerciseForm(){
+function AddExerciseForm({onAdd}){
     const [name,setName] = useState("")
     const [message, setMessage] = useState(null)
     const [loading, setLoading] = useState(false)
@@ -26,6 +26,7 @@ function AddExerciseForm(){
       await createExercise({ name })
       setMessage("Exercise added!")
       setName("") // Clears the input
+      onAdd?.() // Triggers a refresh on adding an exercise
     } catch (err) {
       setMessage("Error adding exercise.");
       console.error(err)

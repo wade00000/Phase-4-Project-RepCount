@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react' 
 import { getExercises } from '../api/exercises' 
 
-function ExerciseList() {
+function ExerciseList({exercises,loading}) {
+  
   const [exercises, setExercises] = useState([]) 
-  const [loading, setLoading] = useState(true) 
   const [error, setError] = useState(null) 
 
   useEffect(() => {
