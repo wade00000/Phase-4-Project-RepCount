@@ -149,6 +149,17 @@ def get_workout(id):
 
     return jsonify(workout_data), 200
 
+@app.route('/workouts/<int:id>', methods=['DELETE'])
+def delete_workout(id):
+    workout = Workout.query.get(id)
+    if workout is None:
+        return jsonify({"error": "Workout not found"}), 404
+
+    db.session.delete(workout)
+    db.session.commit()
+
+    return jsonify({"message": f"Workout {id} deleted successfully."}), 200
+
 
 
 

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from '../api/axios'; // Assuming this is your axios instance
+import { Link } from "react-router-dom";
+
 
 function WorkoutHistory() {
   const [workouts, setWorkouts] = useState([]);
@@ -31,7 +33,7 @@ function WorkoutHistory() {
      {workouts.map((workout) => (
   <div key={workout.id} className="workout">
     <h3>Workout Date: {new Date(workout.date).toLocaleDateString()}</h3>
-
+        <Link to={`/workouts/${workout.id}`}>View Details</Link>
     {workout.workout_exercises.map((we) => (
       <div key={we.id} className="exercise">
         <h4>{we.exercise?.name || "Unknown Exercise"}</h4>
