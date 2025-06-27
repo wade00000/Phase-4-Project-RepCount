@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "../api/axios";
 import { getWorkouts } from '../api/workouts';
+import { getExercises } from "../api/exercises";
 import WorkoutVolumeChart from "../components/WorkoutVolumeChart";
+import RepsVsWeightChart from '../components/RepsVsWeightChart'
 
 function LoggedWorkouts() {
   const [workouts, setWorkouts] = useState([]);
@@ -10,6 +12,8 @@ function LoggedWorkouts() {
   const [sortAsc, setSortAsc] = useState(false);
   const [filterDate, setFilterDate] = useState("");
   const [volumeData, setVolumeData] = useState([]);
+  const [availableExercises, setAvailableExercises] = useState([]);
+
 
 useEffect(() => {
   const fetchWorkouts = async () => {
@@ -44,6 +48,20 @@ useEffect(() => {
   useEffect(() => {
     fetchWorkouts();
   }, []);
+
+  useEffect(() => {
+  const fetchExercises = async () => {
+    try {
+      const res = await getExercises();
+      setAvailableExercises(res.data);
+    } catch (err) {
+      console.error("Error fetching exercises", err);
+    }
+  };
+
+  fetchExercises();
+}, []);
+
 
   const fetchWorkouts = async () => {
     setLoading(true);
@@ -84,6 +102,7 @@ useEffect(() => {
   return (
     <div>
       <h2>Logged Workouts</h2>
+    <RepsVsWeightChart workouts={workouts} availableExercises={availableExercises} />
     {volumeData.length > 0 && <WorkoutVolumeChart data={volumeData} />}
       <div style={{ marginBottom: "1rem" }}>
         <label>

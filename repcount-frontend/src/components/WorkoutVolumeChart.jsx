@@ -7,9 +7,10 @@ import {
   CategoryScale,
   Tooltip,
   Legend,
+  Filler,
 } from 'chart.js';
 
-ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend);
+ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend,Filler);
 
 function WorkoutVolumeChart({ data }) {
   const chartData = {
