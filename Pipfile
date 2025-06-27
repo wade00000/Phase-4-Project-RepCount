@@ -4,6 +4,8 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+pyjwt = "*"
+flask-bcrypt = "*"
 
 [dev-packages]
 alembic = "*"

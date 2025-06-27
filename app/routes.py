@@ -1,6 +1,7 @@
 import os
-from flask import Flask,make_response,request,jsonify
-from app.models import db,User,Exercise,Workout,WorkoutExercise,Set
+from flask import Flask,make_response,request,jsonify,Blueprint
+from app.models import db,User,Exercise,Workout,WorkoutExercise,Set,bcrypt
+from app.auth import auth_bp
 from datetime import datetime
 from flask_cors import CORS
 
@@ -14,6 +15,11 @@ app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{db_path}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
+bcrypt.init_app(app)
+
+app.register_blueprint(auth_bp)
+
+
 
 
 
@@ -268,5 +274,7 @@ def delete_set(id):
     db.session.commit()
 
     return jsonify({"success": True, "message": "Set deleted"}), 200
+
+
 
 
