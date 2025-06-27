@@ -8,10 +8,25 @@ function WorkoutLogger() {
   const [workoutExercises, setWorkoutExercises] = useState([
     {
       exerciseId: "",
+      customExerciseName: "",
       notes: "",
       sets: [{ reps: "", weight: "" }]
     }
   ])
+
+  useEffect(() => {
+    setDate(new Date().toISOString().split("T")[0])
+
+    const fetch = async () => {
+      try {
+        const res = await getExercises()
+        setAvailableExercises(res.data)
+      } catch (err) {
+        console.error("Failed to fetch exercises")
+      }
+    }
+    fetch()
+  }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -25,11 +40,12 @@ function WorkoutLogger() {
       user_id: 1,
       date,
       workout_exercises: workoutExercises.map((we) => ({
-        exercise_id: Number(we.exerciseId),
+        exercise_id: we.exerciseId === "custom" ? null : Number(we.exerciseId),
+        name: we.exerciseId === "custom" ? we.customExerciseName : undefined,
         notes: we.notes,
         sets: we.sets.map((s) => ({
-          reps: Number(s.reps),
-          weight: Number(s.weight)
+          reps: Number(s.reps) || 0,
+          weight: Number(s.weight) || 0
         }))
       }))
     }
@@ -37,23 +53,22 @@ function WorkoutLogger() {
     try {
       await createWorkout(workoutPayload)
       alert("Workout logged successfully!")
+
+      // Reset form
+      setWorkoutExercises([
+        {
+          exerciseId: "",
+          customExerciseName: "",
+          notes: "",
+          sets: [{ reps: "", weight: "" }]
+        }
+      ])
+      setDate(new Date().toISOString().split("T")[0])
     } catch (err) {
       console.error("Error logging workout", err)
       alert("Something went wrong logging your workout")
     }
   }
-
-  useEffect(() => {
-    const fetch = async () => {
-      try {
-        const res = await getExercises()
-        setAvailableExercises(res.data)
-      } catch (err) {
-        console.error("Failed to fetch exercises")
-      }
-    }
-    fetch()
-  }, [])
 
   return (
     <div className="container mt-4">
@@ -78,7 +93,11 @@ function WorkoutLogger() {
                 value={we.exerciseId}
                 onChange={(e) => {
                   const updated = [...workoutExercises]
-                  updated[index].exerciseId = e.target.value
+                  updated[index] = {
+                    ...updated[index],
+                    exerciseId: e.target.value,
+                    customExerciseName: "" // reset custom name if not using it
+                  }
                   setWorkoutExercises(updated)
                 }}
               >
@@ -88,7 +107,24 @@ function WorkoutLogger() {
                     {ex.name}
                   </option>
                 ))}
+                <option value="custom">➕ Custom Exercise</option>
               </select>
+              {we.exerciseId === "custom" && (
+                <input
+                  type="text"
+                  className="form-control mt-2"
+                  placeholder="Enter custom exercise name"
+                  value={we.customExerciseName}
+                  onChange={(e) => {
+                    const updated = [...workoutExercises]
+                    updated[index] = {
+                      ...updated[index],
+                      customExerciseName: e.target.value
+                    }
+                    setWorkoutExercises(updated)
+                  }}
+                />
+              )}
             </div>
 
             <div className="mb-3">
@@ -99,61 +135,109 @@ function WorkoutLogger() {
                 placeholder="e.g. Focus on form"
                 value={we.notes}
                 onChange={(e) => {
-                  const updated = [...workoutExercises]
-                  updated[index].notes = e.target.value
-                  setWorkoutExercises(updated)
+                  setWorkoutExercises((prev) =>
+                    prev.map((item, i) =>
+                      i === index ? { ...item, notes: e.target.value } : item
+                    )
+                  )
                 }}
               />
             </div>
 
             <h6>Sets</h6>
             {we.sets.map((set, sIdx) => (
-  <div key={sIdx} className="row mb-2">
-    <div className="col">
-      <input
-        type="number"
-        className="form-control"
-        placeholder="Reps"
-        value={set.reps}
-        onChange={(e) => {
-          const value = Math.max(0, Number(e.target.value))
-          const updated = [...workoutExercises]
-          updated[index].sets[sIdx].reps = value
-          setWorkoutExercises(updated)
-        }}
-        min="0"
-      />
-    </div>
-    <div className="col">
-      <input
-        type="number"
-        className="form-control"
-        placeholder="Weight"
-        value={set.weight}
-        onChange={(e) => {
-          const value = Math.max(0, Number(e.target.value))
-          const updated = [...workoutExercises]
-          updated[index].sets[sIdx].weight = value
-          setWorkoutExercises(updated)
-        }}
-        min="0"
-      />
-    </div>
-    <div className="col-12">
-      <small className="text-muted">Set {sIdx + 1}</small>
-    </div>
-  </div>
-))}
-
+              <div key={sIdx} className="row mb-2 align-items-center">
+                <div className="col">
+                  <input
+                    type="number"
+                    className="form-control"
+                    placeholder="Reps"
+                    value={set.reps}
+                    onChange={(e) => {
+                      const value = Math.max(0, Number(e.target.value) || 0)
+                      setWorkoutExercises((prev) =>
+                        prev.map((we, i) =>
+                          i === index
+                            ? {
+                                ...we,
+                                sets: we.sets.map((s, j) =>
+                                  j === sIdx ? { ...s, reps: value } : s
+                                )
+                              }
+                            : we
+                        )
+                      )
+                    }}
+                    min="0"
+                  />
+                </div>
+                <div className="col">
+                  <input
+                    type="number"
+                    className="form-control"
+                    placeholder="Weight"
+                    value={set.weight}
+                    onChange={(e) => {
+                      const value = Math.max(0, Number(e.target.value) || 0)
+                      setWorkoutExercises((prev) =>
+                        prev.map((we, i) =>
+                          i === index
+                            ? {
+                                ...we,
+                                sets: we.sets.map((s, j) =>
+                                  j === sIdx ? { ...s, weight: value } : s
+                                )
+                              }
+                            : we
+                        )
+                      )
+                    }}
+                    min="0"
+                  />
+                </div>
+                <div className="col-auto">
+                  {we.sets.length > 1 && (
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-danger"
+                      onClick={() =>
+                        setWorkoutExercises((prev) =>
+                          prev.map((we, i) =>
+                            i === index
+                              ? {
+                                  ...we,
+                                  sets: we.sets.filter((_, j) => j !== sIdx)
+                                }
+                              : we
+                          )
+                        )
+                      }
+                    >
+                      ❌
+                    </button>
+                  )}
+                </div>
+                <div className="col-12">
+                  <small className="text-muted">Set {sIdx + 1}</small>
+                </div>
+              </div>
+            ))}
 
             <button
               type="button"
               className="btn btn-outline-secondary btn-sm mt-2"
-              onClick={() => {
-                const updated = [...workoutExercises]
-                updated[index].sets.push({ reps: "", weight: "" })
-                setWorkoutExercises(updated)
-              }}
+              onClick={() =>
+                setWorkoutExercises((prev) =>
+                  prev.map((we, i) =>
+                    i === index
+                      ? {
+                          ...we,
+                          sets: [...we.sets, { reps: "", weight: "" }]
+                        }
+                      : we
+                  )
+                )
+              }
             >
               ➕ Add Set
             </button>
@@ -166,7 +250,12 @@ function WorkoutLogger() {
           onClick={() =>
             setWorkoutExercises([
               ...workoutExercises,
-              { exerciseId: "", notes: "", sets: [{ reps: "", weight: "" }] }
+              {
+                exerciseId: "",
+                customExerciseName: "",
+                notes: "",
+                sets: [{ reps: "", weight: "" }]
+              }
             ])
           }
         >

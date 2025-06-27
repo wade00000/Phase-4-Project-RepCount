@@ -28,8 +28,11 @@ app.register_blueprint(auth_bp)
 @app.route('/exercises' ,methods = ['POST'])
 def create_exercise():
     data = request.get_json()
+    user_id = data.get("created_by_user_id")
+
     new_exercise = Exercise(
-        name = data.get("name")
+        name = data.get("name"),
+        created_by_user_id=user_id
     )
 
     db.session.add(new_exercise)
@@ -38,17 +41,24 @@ def create_exercise():
     return jsonify(new_exercise.to_dict()),201
 
 
-@app.route('/exercises',methods = ['GET'])
+@app.route('/exercises', methods=['GET'])
 def get_all_exercises():
-    exercises = Exercise.query.all()
+    user_id = request.args.get('user_id', type=int)
+
+    if user_id is not None:
+        exercises = Exercise.query.filter(
+            (Exercise.created_by_user_id == None) | 
+            (Exercise.created_by_user_id == user_id)
+        ).all()
+    else:
+        exercises = Exercise.query.filter(Exercise.created_by_user_id == None).all()
+
     exercises_list = [exercise.to_dict() for exercise in exercises]
-
-    return jsonify(exercises_list),200
-
+    return jsonify(exercises_list), 200
 
 @app.route('/exercises/<int:id>',methods = ['GET'])
 def get_exercise_by_id(id):
-    exercise = Exercise.query.get(id).first()
+    exercise = Exercise.query.get(id)
     if not exercise:
         return jsonify({"error": "Exercise not found"}), 404
 
