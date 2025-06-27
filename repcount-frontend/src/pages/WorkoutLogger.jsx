@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { getExercises } from "../api/exercises"
+import { createExercise, getExercises } from "../api/exercises"
 import { createWorkout } from "../api/workouts"
 
 function WorkoutLogger() {
@@ -36,18 +36,45 @@ function WorkoutLogger() {
       return
     }
 
+    const userId = 1 // Replace with real auth later
+
+    const processedExercises = await Promise.all(
+      workoutExercises.map(async (we) => {
+        let exerciseId = we.exerciseId
+
+        if (exerciseId === "custom" && we.customExerciseName.trim()) {
+          try {
+            const newExercise = await createExercise({
+              name: we.customExerciseName.trim(),
+              created_by_user_id: userId
+            })
+
+            exerciseId = newExercise.id
+
+            // Add new exercise to dropdown list
+            setAvailableExercises((prev) => [...prev, newExercise])
+          } catch (err) {
+            console.error("Failed to create custom exercise", err)
+            alert("Couldn't create custom exercise.")
+            return null
+          }
+        }
+
+        return {
+          exercise_id: Number(exerciseId),
+          notes: we.notes,
+          sets: we.sets.map((s) => ({
+            reps: Number(s.reps) || 0,
+            weight: Number(s.weight) || 0
+          }))
+        }
+      })
+    )
+
     const workoutPayload = {
-      user_id: 1,
+      user_id: userId,
       date,
-      workout_exercises: workoutExercises.map((we) => ({
-        exercise_id: we.exerciseId === "custom" ? null : Number(we.exerciseId),
-        name: we.exerciseId === "custom" ? we.customExerciseName : undefined,
-        notes: we.notes,
-        sets: we.sets.map((s) => ({
-          reps: Number(s.reps) || 0,
-          weight: Number(s.weight) || 0
-        }))
-      }))
+      workout_exercises: processedExercises.filter(Boolean)
     }
 
     try {
@@ -96,7 +123,7 @@ function WorkoutLogger() {
                   updated[index] = {
                     ...updated[index],
                     exerciseId: e.target.value,
-                    customExerciseName: "" // reset custom name if not using it
+                    customExerciseName: ""
                   }
                   setWorkoutExercises(updated)
                 }}
