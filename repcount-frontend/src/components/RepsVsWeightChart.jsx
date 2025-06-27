@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Scatter } from 'react-chartjs-2';
+import React, { useState } from 'react'
+import { Scatter } from 'react-chartjs-2'
 import {
   Chart as ChartJS,
   PointElement,
@@ -7,12 +7,12 @@ import {
   Legend,
   LinearScale,
   Title
-} from 'chart.js';
+} from 'chart.js'
 
-ChartJS.register(PointElement, Tooltip, Legend, LinearScale, Title);
+ChartJS.register(PointElement, Tooltip, Legend, LinearScale, Title)
 
 function RepsVsWeightChart({ workouts, availableExercises }) {
-  const [selectedExerciseId, setSelectedExerciseId] = useState("");
+  const [selectedExerciseId, setSelectedExerciseId] = useState("")
 
   const filteredSets = workouts
     .flatMap((w) =>
@@ -24,44 +24,53 @@ function RepsVsWeightChart({ workouts, availableExercises }) {
             weight: Number(s.weight)
           }))
         )
-    );
+    )
 
   const chartData = {
     datasets: [
       {
         label: 'Reps vs Weight',
         data: filteredSets.map((s) => ({ x: s.reps, y: s.weight })),
-        backgroundColor: 'rgba(255, 99, 132, 0.6)'
+        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        pointRadius: 5
       }
     ]
-  };
+  }
 
   const chartOptions = {
     responsive: true,
     plugins: {
       title: {
         display: true,
-        text: 'Reps vs Weight Chart'
+        text: 'Reps vs Weight'
+      },
+      legend: {
+        display: false
       }
     },
     scales: {
       x: {
-        title: { display: true, text: 'Reps' }
+        title: { display: true, text: 'Reps' },
+        beginAtZero: true
       },
       y: {
-        title: { display: true, text: 'Weight (kg)' }
+        title: { display: true, text: 'Weight (kg)' },
+        beginAtZero: true
       }
     }
-  };
+  }
 
   return (
-    <div>
-      <h3>Reps vs Weight (by Exercise)</h3>
+    <div className="mt-5">
+      <h3 className="mb-3">Reps vs Weight Chart</h3>
+
       <select
+        className="form-select mb-4"
         value={selectedExerciseId}
         onChange={(e) => setSelectedExerciseId(e.target.value)}
       >
-        <option value="">Select Exercise</option>
+        <option value="">Select an exercise</option>
         {availableExercises.map((ex) => (
           <option key={ex.id} value={ex.id}>
             {ex.name}
@@ -70,12 +79,14 @@ function RepsVsWeightChart({ workouts, availableExercises }) {
       </select>
 
       {selectedExerciseId && filteredSets.length > 0 ? (
-        <Scatter data={chartData} options={chartOptions} />
+        <div className="chart-container bg-light p-3 rounded shadow-sm">
+          <Scatter data={chartData} options={chartOptions} />
+        </div>
       ) : selectedExerciseId ? (
-        <p>No sets logged for that exercise.</p>
+        <p className="text-muted">No sets logged for this exercise</p>
       ) : null}
     </div>
-  );
+  )
 }
 
-export default RepsVsWeightChart;
+export default RepsVsWeightChart

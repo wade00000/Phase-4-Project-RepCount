@@ -1,30 +1,34 @@
-import React, { useState, useEffect } from 'react' 
-import { getExercises } from '../api/exercises' 
+import React from 'react'
 
-function ExerciseList({exercises,loading,error,onDelete}) {
-  
-
-  if (loading) return <p>Loading...</p> 
-  if (error) return <p>{error}</p> 
+function ExerciseList({ exercises, loading, error, onDelete }) {
+  if (loading) return <p className="text-muted">Loading...</p>
+  if (error) return <p className="text-danger">{error}</p>
 
   return (
-    <div>
-      <h2>Exercises</h2>
-      {exercises.length === 0 ?(
-        <p>No exercises found.</p>
-      ):(
-      <ul>
-        {exercises.map((exe) => (
-          <li key={exe.id}>
-            {exe.name}
-            <button onClick={() => onDelete(exe.id)}>❌</button>
+    <div className="mt-4">
+      <h2 className="mb-3">Exercises</h2>
+      {exercises.length === 0 ? (
+        <p className="text-secondary">No exercises found</p>
+      ) : (
+        <ul className="list-group">
+          {exercises.map((exe) => (
+            <li
+              key={exe.id}
+              className="list-group-item d-flex justify-content-between align-items-center"
+            >
+              {exe.name}
+              <button
+                className="btn btn-outline-danger btn-sm"
+                onClick={() => onDelete(exe.id)}
+              >
+                ❌
+              </button>
             </li>
-        ))}
-      </ul>
-        )
-      }
+          ))}
+        </ul>
+      )}
     </div>
-  ) 
+  )
 }
 
-export default ExerciseList 
+export default ExerciseList

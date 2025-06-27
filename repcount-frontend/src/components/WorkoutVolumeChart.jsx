@@ -1,4 +1,4 @@
-import { Line } from 'react-chartjs-2';
+import { Line } from 'react-chartjs-2'
 import {
   Chart as ChartJS,
   LineElement,
@@ -7,10 +7,10 @@ import {
   CategoryScale,
   Tooltip,
   Legend,
-  Filler,
-} from 'chart.js';
+  Filler
+} from 'chart.js'
 
-ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend,Filler);
+ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend, Filler)
 
 function WorkoutVolumeChart({ data }) {
   const chartData = {
@@ -19,13 +19,14 @@ function WorkoutVolumeChart({ data }) {
       {
         label: 'Total Volume',
         data: data.map(d => d.totalVolume),
-        borderColor: 'rgba(75,192,192,1)',
-        backgroundColor: 'rgba(75,192,192,0.2)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        pointBackgroundColor: 'rgba(54, 162, 235, 1)',
         tension: 0.25,
-        fill: true,
+        fill: true
       }
     ]
-  };
+  }
 
   const options = {
     responsive: true,
@@ -33,11 +34,37 @@ function WorkoutVolumeChart({ data }) {
       legend: {
         display: true,
         position: 'top'
+      },
+      tooltip: {
+        mode: 'index',
+        intersect: false
+      }
+    },
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: 'Date'
+        }
+      },
+      y: {
+        title: {
+          display: true,
+          text: 'Volume (kg)'
+        },
+        beginAtZero: true
       }
     }
-  };
+  }
 
-  return <Line data={chartData} options={options} />;
+  return (
+    <div className="mt-5">
+      <h3 className="mb-3">Workout Volume Over Time</h3>
+      <div className="bg-light p-3 rounded shadow-sm">
+        <Line data={chartData} options={options} />
+      </div>
+    </div>
+  )
 }
 
-export default WorkoutVolumeChart;
+export default WorkoutVolumeChart
