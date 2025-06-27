@@ -1,7 +1,16 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../auth/AuthContext'
 
 function Navbar() {
+  const { user, logout } = useAuth()
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    logout()
+    navigate('/login')
+  }
+
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
       <div className="container-fluid">
@@ -22,6 +31,28 @@ function Navbar() {
             <li className="nav-item">
               <Link className="nav-link" to="/logged-workouts">Logged Workouts</Link>
             </li>
+
+            {user ? (
+              <>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/profile">Profile</Link>
+                </li>
+                <li className="nav-item">
+                  <button onClick={handleLogout} className="nav-link btn btn-link text-danger" style={{ textDecoration: 'none' }}>
+                    Logout
+                  </button>
+                </li>
+              </>
+            ) : (
+              <>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/login">Login</Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/register">Register</Link>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       </div>
