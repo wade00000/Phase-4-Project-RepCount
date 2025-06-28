@@ -9,6 +9,7 @@ import Navbar from './components/Navbar'
 import WorkoutDetail from "./pages/WorkoutDetail";
 import LoggedWorkouts from './pages/LoggedWorkouts'; 
 import Profile from './pages/Profile';
+import Charts from './pages/Charts';
 
 
 
@@ -30,6 +31,7 @@ function App() {
            {/*Auth routes*/}
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/charts" element={<Charts/>} />
 
         </Routes>
       </div>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import axios from "../api/axios"
 
+
 function LoggedWorkouts() {
   const [workouts, setWorkouts] = useState([])
   const [loading, setLoading] = useState(true)
@@ -30,6 +31,8 @@ function LoggedWorkouts() {
   return (
     <div className="container mt-4">
       <h2 className="mb-4">Logged Workouts</h2>
+
+      
       {workouts.map((workout) => (
         <div key={workout.id} className="card mb-3">
           <div className="card-body">
