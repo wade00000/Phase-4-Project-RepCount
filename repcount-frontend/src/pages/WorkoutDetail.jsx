@@ -30,7 +30,7 @@ function WorkoutDetail() {
 
   return (
     <div className="container mt-4">
-      <Link to="/" className="btn btn-outline-secondary mb-3">← Back</Link>
+      <Link to="/logged-workouts" className="btn btn-outline-secondary mb-3">← Back</Link>
 
       <h2 className="mb-4">
         Workout on {new Date(workout.date).toLocaleDateString()}

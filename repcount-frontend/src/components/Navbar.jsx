@@ -23,9 +23,6 @@ function Navbar() {
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto">
             <li className="nav-item">
-              <Link className="nav-link" to="/">Exercises</Link>
-            </li>
-            <li className="nav-item">
               <Link className="nav-link" to="/log-workout">Log Workout</Link>
             </li>
             <li className="nav-item">

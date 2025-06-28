@@ -3,7 +3,6 @@ from flask_bcrypt import Bcrypt
 from sqlalchemy_serializer import SerializerMixin
 from datetime import datetime
 
-
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 
@@ -17,7 +16,6 @@ class User(db.Model):
 
     workouts = db.relationship("Workout", back_populates="user", cascade="all, delete-orphan")
 
-
     def set_password(self, password):
         self.password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
 
@@ -25,7 +23,7 @@ class User(db.Model):
         return bcrypt.check_password_hash(self.password_hash, password)
 
 
-class Workout(db.Model,SerializerMixin):
+class Workout(db.Model, SerializerMixin):
     __tablename__ = "workouts"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -37,8 +35,11 @@ class Workout(db.Model,SerializerMixin):
     user = db.relationship("User", back_populates="workouts")
     workout_exercises = db.relationship("WorkoutExercise", back_populates="workout", cascade="all, delete-orphan")
 
+    # ✅ Prevent recursive serialization
+    serialize_rules = ('-user', '-workout_exercises.workout')
 
-class Exercise(db.Model,SerializerMixin):
+
+class Exercise(db.Model, SerializerMixin):
     __tablename__ = "exercises"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -47,8 +48,11 @@ class Exercise(db.Model,SerializerMixin):
 
     workout_exercises = db.relationship("WorkoutExercise", back_populates="exercise", cascade="all, delete-orphan")
 
+    # Optional: prevent recursion if ever serializing exercises with their WEs
+    serialize_rules = ('-workout_exercises.exercise',)
 
-class WorkoutExercise(db.Model,SerializerMixin):
+
+class WorkoutExercise(db.Model, SerializerMixin):
     __tablename__ = "workout_exercises"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -60,8 +64,11 @@ class WorkoutExercise(db.Model,SerializerMixin):
     exercise = db.relationship("Exercise", back_populates="workout_exercises")
     sets = db.relationship("Set", back_populates="workout_exercise", cascade="all, delete-orphan")
 
+    # ✅ Prevent recursion and back refs
+    serialize_rules = ('-workout', '-exercise.workout_exercises', '-sets.workout_exercise')
 
-class Set(db.Model,SerializerMixin):
+
+class Set(db.Model, SerializerMixin):
     __tablename__ = "sets"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -70,3 +77,6 @@ class Set(db.Model,SerializerMixin):
     weight = db.Column(db.Float, default=0)
 
     workout_exercise = db.relationship("WorkoutExercise", back_populates="sets")
+
+    # ✅ Prevent back ref loop
+    serialize_rules = ('-workout_exercise.sets',)

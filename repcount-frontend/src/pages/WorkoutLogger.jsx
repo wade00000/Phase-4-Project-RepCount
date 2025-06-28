@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { createExercise, getExercises } from "../api/exercises"
 import { createWorkout } from "../api/workouts"
+import { useNavigate } from "react-router-dom"
+
 
 function WorkoutLogger() {
   const [date, setDate] = useState("")
@@ -13,6 +15,9 @@ function WorkoutLogger() {
       sets: [{ reps: "", weight: "" }]
     }
   ])
+
+  const navigate = useNavigate()
+
 
   useEffect(() => {
     setDate(new Date().toISOString().split("T")[0])
@@ -50,8 +55,6 @@ function WorkoutLogger() {
             })
 
             exerciseId = newExercise.id
-
-            // Add new exercise to dropdown list
             setAvailableExercises((prev) => [...prev, newExercise])
           } catch (err) {
             console.error("Failed to create custom exercise", err)
@@ -78,10 +81,12 @@ function WorkoutLogger() {
     }
 
     try {
+      console.log("Submitting workout payload:", workoutPayload);
       await createWorkout(workoutPayload)
       alert("Workout logged successfully!")
+     
 
-      // Reset form
+
       setWorkoutExercises([
         {
           exerciseId: "",
@@ -91,6 +96,8 @@ function WorkoutLogger() {
         }
       ])
       setDate(new Date().toISOString().split("T")[0])
+
+      navigate("/logged-workouts")
     } catch (err) {
       console.error("Error logging workout", err)
       alert("Something went wrong logging your workout")
@@ -174,6 +181,7 @@ function WorkoutLogger() {
             <h6>Sets</h6>
             {we.sets.map((set, sIdx) => (
               <div key={sIdx} className="row mb-2 align-items-center">
+                {/* Reps input */}
                 <div className="col">
                   <input
                     type="number"
@@ -198,30 +206,39 @@ function WorkoutLogger() {
                     min="0"
                   />
                 </div>
+
+                {/* Weight input + unit label */}
                 <div className="col">
-                  <input
-                    type="number"
-                    className="form-control"
-                    placeholder="Weight"
-                    value={set.weight}
-                    onChange={(e) => {
-                      const value = Math.max(0, Number(e.target.value) || 0)
-                      setWorkoutExercises((prev) =>
-                        prev.map((we, i) =>
-                          i === index
-                            ? {
-                                ...we,
-                                sets: we.sets.map((s, j) =>
-                                  j === sIdx ? { ...s, weight: value } : s
-                                )
-                              }
-                            : we
+                  <div className="input-group">
+                    <input
+                      type="number"
+                      className="form-control"
+                      placeholder="Weight"
+                      value={set.weight}
+                      onChange={(e) => {
+                        const value = Math.max(0, Number(e.target.value) || 0)
+                        setWorkoutExercises((prev) =>
+                          prev.map((we, i) =>
+                            i === index
+                              ? {
+                                  ...we,
+                                  sets: we.sets.map((s, j) =>
+                                    j === sIdx
+                                      ? { ...s, weight: value }
+                                      : s
+                                  )
+                                }
+                              : we
+                          )
                         )
-                      )
-                    }}
-                    min="0"
-                  />
+                      }}
+                      min="0"
+                    />
+                    <span className="input-group-text">kg / lbs</span>
+                  </div>
                 </div>
+
+                {/* Delete set button */}
                 <div className="col-auto">
                   {we.sets.length > 1 && (
                     <button
@@ -244,6 +261,7 @@ function WorkoutLogger() {
                     </button>
                   )}
                 </div>
+
                 <div className="col-12">
                   <small className="text-muted">Set {sIdx + 1}</small>
                 </div>

@@ -6,7 +6,8 @@ from datetime import datetime
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app, origins=["http://127.0.0.1:5173"])
+CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*"}})
+
 
 basedir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 db_path = os.path.join(basedir, 'data', 'repcount.db')
@@ -94,22 +95,50 @@ def delete_exercise(id):
 
 
 # =============WORKOUT===============
-@app.route('/workouts' ,methods = ['POST'])
+import traceback
+
+@app.route('/workouts', methods=['POST'])
 def create_workout():
-    data = request.get_json()
+    try:
+        data = request.get_json()
+        print("🚀 Received workout data:", data)
 
-    if not data.get("user_id") or not data.get("date"):
-        return jsonify({"error": "Missing required fields"}), 400
-    
-    new_workout = Workout(
-        user_id = data.get("user_id"),
-        date=datetime.fromisoformat(data.get('date'))
-    )
+        if not data.get("user_id") or not data.get("date"):
+            return jsonify({"error": "Missing required fields"}), 400
 
-    db.session.add(new_workout)
-    db.session.commit()
+        new_workout = Workout(
+            user_id=data["user_id"],
+            date=datetime.fromisoformat(data["date"])
+        )
+        db.session.add(new_workout)
+        db.session.flush()  # Assigns new_workout.id
 
-    return jsonify(new_workout.to_dict()),201
+        for we in data.get("workout_exercises", []):
+            print("🔧 Processing exercise:", we)
+            new_we = WorkoutExercise(
+                workout_id=new_workout.id,
+                exercise_id=we["exercise_id"],
+                notes=we.get("notes", "")
+            )
+            db.session.add(new_we)
+            db.session.flush()
+
+            for s in we.get("sets", []):
+                print("📦 Adding set:", s)
+                new_set = Set(
+                    workout_exercise_id=new_we.id,
+                    reps=s.get("reps", 0),
+                    weight=s.get("weight", 0)
+                )
+                db.session.add(new_set)
+
+        db.session.commit()
+        return jsonify(new_workout.to_dict()), 201
+
+    except Exception as e:
+        print("🔥 ERROR during workout creation:", e)
+        traceback.print_exc()
+        return jsonify({"error": "Internal Server Error", "details": str(e)}), 500
 
 
 @app.route('/workouts/<int:id>', methods=['PATCH'])
