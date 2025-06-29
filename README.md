@@ -134,7 +134,7 @@ Use Postman or similar tool to test routes like:
 
 ## 🧑‍💻 Author
 
-**Wade** – Full Stack Software Engineer in the making (Python, JS, HTML+CSS, SQL, etc.)  
+**Wade Namada** – Full Stack Software Engineer in the making (Python, JS, HTML+CSS, SQL, etc.)  
 Inspired by building tools for real-world fitness tracking.
 
 ---
