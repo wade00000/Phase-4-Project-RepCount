@@ -13,7 +13,7 @@ function Navbar() {
 
   return (
     <nav
-      className="navbar navbar-expand-lg mb-4"
+      className="navbar navbar-expand-lg mb-0"
       style={{
         background: 'linear-gradient(to right, #ff4ecb, #00ffe1)',
         boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 
 function Welcome() {
   return (
-    <div className="container mt-4">
+    <div className="container mt-0">
       <div className="card p-4 shadow-sm">
         <h2 className="mb-3 text-center">
           Welcome to <span className="text-primary">RepCount</span> 🏋️‍♂️

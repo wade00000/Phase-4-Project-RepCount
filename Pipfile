@@ -4,13 +4,15 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-pyjwt = "*"
+flask = "*"
+flask-sqlalchemy = "*"
 flask-bcrypt = "*"
+pyjwt = "*"
 
 [dev-packages]
 alembic = "*"
-flask = "*"
-flask-sqlalchemy = "*"
+pytest = "*"
+pytest-flask = "*"
 
 [requires]
 python_version = "3.12"

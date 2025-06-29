@@ -29,7 +29,7 @@ function Charts() {
   if (!workouts.length) return <div className="alert alert-warning">No workout data to display</div>
 
   return (
-    <div className="container mt-4">
+    <div className="container mt-0">
       <h2 className="mb-4">Workout Charts</h2>
 
       <div className="card mb-4 p-3">

@@ -29,7 +29,7 @@ function LoggedWorkouts() {
   if (!workouts.length) return <div className="alert alert-warning">No workouts found</div>
 
   return (
-    <div className="container mt-4">
+    <div className="container mt-0">
       <h2 className="mb-4">Logged Workouts</h2>
 
       
