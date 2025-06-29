@@ -1,6 +1,5 @@
 # 🏋️‍♂️ RepCount
 
-[![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Flask](https://img.shields.io/badge/backend-Flask-blue)](https://flask.palletsprojects.com/)
 [![React](https://img.shields.io/badge/frontend-React-blue)](https://react.dev/)
 [![SQLite](https://img.shields.io/badge/database-SQLite-lightgrey)](https://www.sqlite.org/)
@@ -16,11 +15,7 @@ RepCount is a **full-stack workout tracker web app** that helps you log workouts
 
 ---
 
-## 📸 Screenshots
 
-*Add screenshots of your home page, log workout form, charts, etc.*
-
----
 
 ## 🚀 Features
 
@@ -71,6 +66,9 @@ pipenv shell
 
 # Run the server
 python main.py
+
+# Seed the database
+python seed_exercises.py
 ```
 
 Server runs at: [http://127.0.0.1:5000](http://127.0.0.1:5000)
@@ -112,15 +110,6 @@ Use Postman or similar tool to test routes like:
 - Total workout volume over time (`WorkoutVolumeChart`)
 - Reps vs weight (`RepsVsWeightChart`)
 - Data comes from joined tables (Workout, WorkoutExercise, Set)
-
----
-
-## ✅ Roadmap / TODO
-
-- [ ] Add profile page
-- [ ] Enable editing/deleting exercises
-- [ ] Social features (share workouts)
-- [ ] Deploy backend & frontend
 
 ---
 
