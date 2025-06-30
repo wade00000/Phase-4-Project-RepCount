@@ -1,7 +1,7 @@
 import jwt
 from datetime import datetime, timedelta
 
-SECRET_KEY = "super-secret-key"  # 🔐 Replace this with a secure env var in production
+SECRET_KEY = "super-secret-key"  
 
 def generate_token(user_id):
     payload = {

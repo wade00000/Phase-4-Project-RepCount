@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from app.models import db, User
+from backend.models import db, User
 from .auth_utils import generate_token, verify_token
 
 

@@ -1,7 +1,7 @@
 import os
 from flask import Flask,make_response,request,jsonify,Blueprint
-from app.models import db,User,Exercise,Workout,WorkoutExercise,Set,bcrypt
-from app.auth import auth_bp
+from backend.models import db,User,Exercise,Workout,WorkoutExercise,Set,bcrypt
+from backend.auth import auth_bp
 from datetime import datetime
 from flask_cors import CORS
 
