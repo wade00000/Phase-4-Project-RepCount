@@ -9,7 +9,7 @@ function Profile() {
   if (!user) return <p>Loading...</p>
 
   const handleStartLogging = () => {
-    navigate('/') // Redirect to main logging/dashboard route
+    navigate('/welcome') // Redirect to main logging/dashboard route
   }
 
   return (

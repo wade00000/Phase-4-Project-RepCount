@@ -19,7 +19,7 @@ function App() {
       <Navbar/>
       <div className='container mt-3'>
         <Routes>
-          <Route path="/" element={<Welcome />} />
+          <Route path="/welcome" element={<Welcome />} />
           <Route path="/log-workout" element={<WorkoutLogger />} />
           <Route path="/workouts/:id" element={<WorkoutDetail />} />
           <Route path="/logged-workouts" element={<LoggedWorkouts />} />
@@ -29,7 +29,7 @@ function App() {
                                             </ProtectedRoute>
                                           } />
            {/*Auth routes*/}
-          <Route path="/register" element={<Register />} />
+          <Route path="/" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/charts" element={<Charts/>} />
 
