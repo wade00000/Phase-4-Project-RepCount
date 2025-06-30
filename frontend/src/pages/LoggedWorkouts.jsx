@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import axios from "../api/axios"
 
-
 function LoggedWorkouts() {
   const [workouts, setWorkouts] = useState([])
   const [loading, setLoading] = useState(true)
@@ -24,6 +23,19 @@ function LoggedWorkouts() {
     fetchWorkouts()
   }, [])
 
+  const handleDelete = async (id) => {
+    const confirm = window.confirm("Are you sure you want to delete this workout?")
+    if (!confirm) return
+
+    try {
+      await axios.delete(`/workouts/${id}`)
+      setWorkouts(prev => prev.filter(w => w.id !== id))
+    } catch (err) {
+      console.error("Failed to delete workout", err)
+      alert("Failed to delete workout.")
+    }
+  }
+
   if (loading) return <div className="alert alert-info">Loading workouts...</div>
   if (error) return <div className="alert alert-danger">{error}</div>
   if (!workouts.length) return <div className="alert alert-warning">No workouts found</div>
@@ -32,7 +44,6 @@ function LoggedWorkouts() {
     <div className="container mt-0">
       <h2 className="mb-4">Logged Workouts</h2>
 
-      
       {workouts.map((workout) => (
         <div key={workout.id} className="card mb-3">
           <div className="card-body">
@@ -42,9 +53,15 @@ function LoggedWorkouts() {
             <p className="card-text">
               {workout.workout_exercises?.length || 0} exercises
             </p>
-            <Link to={`/workouts/${workout.id}`} className="btn btn-outline-primary">
+            <Link to={`/workouts/${workout.id}`} className="btn btn-outline-primary me-2">
               View Details
             </Link>
+            <button
+              onClick={() => handleDelete(workout.id)}
+              className="btn btn-outline-danger"
+            >
+              Delete
+            </button>
           </div>
         </div>
       ))}
