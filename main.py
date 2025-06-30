@@ -1,5 +1,5 @@
-from app.routes import app
-from app.models import db
+from backend.routes import app
+from backend.models import db
 
 if __name__ == "__main__":
     with app.app_context():
